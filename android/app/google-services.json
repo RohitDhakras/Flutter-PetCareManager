@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "949173127411",
+    "project_id": "pet-care-manager-7709b",
+    "storage_bucket": "pet-care-manager-7709b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:949173127411:android:3c69bec778001b05bc4f86",
+        "android_client_info": {
+          "package_name": "com.pet_care_manager.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVaawQ108zWMHlS8tTOXIaDsS-37qoKuI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

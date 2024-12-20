@@ -1,32 +1,31 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_care_manager/models/schedule.dart';
 
 class SchedulesList extends ChangeNotifier {
+  // User
+  final user = FirebaseAuth.instance.currentUser;
+
   // Schedules List
-  final List<Schedule> _list = [
-    Schedule(
-        dateTime: DateTime(2024, 12, 27, 17, 30),
-        petName: 'Rocky',
-        title: 'Vaccination',
-        location: 'Kalyan'),
-    Schedule(
-        dateTime: DateTime(2024, 12, 20, 15, 00),
-        petName: 'Bella',
-        title: 'Vet Visit',
-        location: 'Thane'),
-    Schedule(
-        dateTime: DateTime(2024, 12, 30, 17, 00),
-        petName: 'Cooper',
-        title: 'Vet Visit',
-        location: 'Mumbai'),
-  ];
+  final List<Schedule> _list = [];
 
   // Get Schedules List
   List<Schedule> get list => _list;
 
   // Add Schedule to the List
-  void addSchedule(Schedule schedule) {
+  void addSchedule(Schedule schedule) async {
     _list.add(schedule);
+    await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(user!.email)
+        .collection('Schedules')
+        .add({
+      'dateTime': schedule.dateTime,
+      'petName': schedule.petName,
+      'title': schedule.title,
+      'location': schedule.location,
+    });
     notifyListeners();
   }
 

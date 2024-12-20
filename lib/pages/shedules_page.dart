@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_care_manager/components/my_button.dart';
 import 'package:pet_care_manager/components/my_drawer.dart';
 import 'package:pet_care_manager/components/my_schedule_tile.dart';
+import 'package:pet_care_manager/models/schedule.dart';
 import 'package:pet_care_manager/models/schedules_list.dart';
 import 'package:provider/provider.dart';
 
@@ -10,7 +13,6 @@ class SchedulesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final schedules = context.watch<SchedulesList>().list;
     return Scaffold(
       appBar: AppBar(
         title: Text('Schedules'),
@@ -23,16 +25,39 @@ class SchedulesPage extends StatelessWidget {
             // Schedule Tiles
             SizedBox(
               height: 550,
-              child: ListView.builder(
-                itemCount: schedules.length,
-                scrollDirection: Axis.vertical,
-                padding: EdgeInsets.all(15),
-                itemBuilder: (context, index) {
-                  // Get Individual Schedule
-                  final schedule = schedules[index];
-
-                  // Return as Schedule Tile
-                  return MyScheduleTile(schedule: schedule);
+              child: StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection('Users')
+                    .doc(FirebaseAuth.instance.currentUser!.email.toString())
+                    .collection('Schedules')
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const Text('An Error Occured');
+                  }
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  return ListView.builder(
+                    itemCount: snapshot.data!.size,
+                    scrollDirection: Axis.vertical,
+                    padding: EdgeInsets.all(15),
+                    itemBuilder: (context, index) {
+                      Timestamp stamp = snapshot.data!.docs[index]["dateTime"];
+                      // Get Individual Schedule
+                      Schedule schedule = Schedule(
+                        dateTime: stamp.toDate(),
+                        petName: snapshot.data!.docs[index]["petName"],
+                        title: snapshot.data!.docs[index]["title"],
+                        location: snapshot.data!.docs[index]["location"],
+                      );
+                      context.read<SchedulesList>().list.add(schedule);
+                      // Return as Schedule Tile
+                      return MyScheduleTile(schedule: schedule);
+                    },
+                  );
                 },
               ),
             )

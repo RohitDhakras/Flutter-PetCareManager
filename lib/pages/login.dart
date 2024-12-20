@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:pet_care_manager/models/pets_list.dart';
 import 'package:pet_care_manager/pages/home.dart';
 import 'package:pet_care_manager/pages/signup.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});

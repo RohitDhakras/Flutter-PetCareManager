@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:pet_care_manager/models/lost_and_found_list.dart';
 import 'package:pet_care_manager/models/pets_list.dart';
 import 'package:pet_care_manager/models/schedules_list.dart';
 import 'package:pet_care_manager/pages/home.dart';
 import 'package:pet_care_manager/pages/intro_page.dart';
 import 'package:pet_care_manager/pages/login.dart';
+import 'package:pet_care_manager/pages/lost_and_found_add_page.dart';
+import 'package:pet_care_manager/pages/lost_and_found_page.dart';
+import 'package:pet_care_manager/pages/my_lost_and_found_page.dart';
 import 'package:pet_care_manager/pages/pet_add_page.dart';
 import 'package:pet_care_manager/pages/pets_page.dart';
 import 'package:pet_care_manager/pages/schedule_add_page.dart';
@@ -35,6 +39,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => SchedulesList(),
         ),
+        ChangeNotifierProvider(
+          create: (context) => LostAndFoundList(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -50,6 +57,9 @@ class MyApp extends StatelessWidget {
           '/pet_add_page': (context) => PetAddPage(),
           '/schedules_page': (context) => SchedulesPage(),
           '/schedule_add_page': (context) => ScheduleAddPage(),
+          '/lost_and_found_page': (context) => LostAndFoundPage(),
+          '/my_lost_and_found_page': (context) => MyLostAndFoundPage(),
+          '/lost_and_found_add_page': (context) => LostAndFoundAddPage(),
         },
       ),
     );

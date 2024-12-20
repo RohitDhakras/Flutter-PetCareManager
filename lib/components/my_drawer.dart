@@ -54,6 +54,15 @@ class MyDrawer extends StatelessWidget {
                   Navigator.pushNamed(context, '/schedules_page');
                 },
               ),
+
+              MyListTile(
+                icon: Icons.question_mark_rounded,
+                text: 'Lost And Found',
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/lost_and_found_page');
+                },
+              ),
             ],
           ),
 

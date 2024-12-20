@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pet_care_manager/pages/home.dart';
@@ -12,6 +13,7 @@ class SignupPage extends StatefulWidget {
 class _SignupPageState extends State<SignupPage> {
   final _formKey = GlobalKey<FormState>();
   // Controllers
+  final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool _obscurePassword = true;
@@ -48,6 +50,7 @@ class _SignupPageState extends State<SignupPage> {
               // Form Fields
               // Name Field
               TextFormField(
+                controller: nameController,
                 decoration: const InputDecoration(
                   labelText: 'Name',
                   border: OutlineInputBorder(),
@@ -122,6 +125,13 @@ class _SignupPageState extends State<SignupPage> {
                         password: passwordController.text,
                       );
 
+                      FirebaseFirestore.instance
+                          .collection('Users')
+                          .doc(emailController.text.toString())
+                          .set({
+                        'email': emailController.text.toString(),
+                        'name': nameController.text.toString(),
+                      });
                       // On Success, navigate to Home Page
                       Navigator.pushReplacement(
                           context,

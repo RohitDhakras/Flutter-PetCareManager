@@ -9,49 +9,63 @@ import 'package:pet_care_manager/models/pet.dart';
 import 'package:pet_care_manager/models/pets_list.dart';
 import 'package:provider/provider.dart';
 
-class LostAndFoundAddPage extends StatefulWidget {
-  const LostAndFoundAddPage({super.key});
+class LostAndFoundEditPage extends StatefulWidget {
+  final LostAndFound lostAndFound;
+  const LostAndFoundEditPage({super.key, required this.lostAndFound});
 
   @override
-  State<LostAndFoundAddPage> createState() => _LostAndFoundAddPageState();
+  State<LostAndFoundEditPage> createState() => _LostAndFoundEditPageState();
 }
 
-class _LostAndFoundAddPageState extends State<LostAndFoundAddPage> {
+class _LostAndFoundEditPageState extends State<LostAndFoundEditPage> {
   final userEmail = FirebaseAuth.instance.currentUser!.email;
+  // Controllers
+  final TextEditingController phoneNumberController = TextEditingController();
+  final TextEditingController petNameController = TextEditingController();
+  final TextEditingController messageController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
   DateTime? date;
   Pet? pet;
+  String userName = "";
+
+  void getUserName() async {
+    await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(userEmail)
+        .get()
+        .then((doc) {
+      if (doc.exists) {
+        setState(() {
+          userName = doc.data()!['userName'];
+        });
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getUserName();
+    petNameController.text = widget.lostAndFound.pet.name;
+    dateController.text =
+        DateFormat('dd-MM-yyyy').format(widget.lostAndFound.missingDate);
+    phoneNumberController.text = widget.lostAndFound.phoneNumber;
+    messageController.text = widget.lostAndFound.message;
+    pet = widget.lostAndFound.pet;
+    date = widget.lostAndFound.missingDate;
+  }
 
   @override
   Widget build(BuildContext context) {
     // Key
     final formKey = GlobalKey<FormState>();
-    // Controllers
-    final TextEditingController phoneNumberController = TextEditingController();
-    final TextEditingController petNameController = TextEditingController();
-    final TextEditingController messageController = TextEditingController();
     final pets = context.watch<PetsList>().list;
-    String userName = "";
-
-    void getUserName() async {
-      await FirebaseFirestore.instance
-          .collection('Users')
-          .doc(userEmail)
-          .get()
-          .then((doc) {
-        if (doc.exists) {
-          setState(() {
-            userName = doc.data()!['userName'];
-          });
-        }
-      });
-    }
 
     void addReport() {
       if (formKey.currentState!.validate() && date != null && pet != null) {
-        getUserName();
         LostAndFound report = LostAndFound(
-          userName: userName,
+          userName: 'Rohit',
           userEmail: userEmail!,
           pet: pet!,
           missingDate: date!,

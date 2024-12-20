@@ -31,8 +31,31 @@ class PetsList extends ChangeNotifier {
   }
 
   // Remove Pet from List
-  void removePet(Pet pet) {
+  void removePet(Pet pet) async {
     _list.remove(pet);
+    await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(user!.email)
+        .collection('Pets')
+        .doc(pet.name)
+        .delete();
     notifyListeners();
+  }
+
+  // Update Pet in List
+  void updatePet(Pet prev, Pet pet) async {
+    final index = _list.indexWhere((pet) => pet.name == prev.name);
+    _list[index] = pet;
+    await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(user!.email)
+        .collection('Pets')
+        .doc(prev.name)
+        .set({
+      'name': pet.name,
+      'animal_type': pet.animalType,
+      'breed': pet.breed,
+      'age': pet.age,
+    });
   }
 }

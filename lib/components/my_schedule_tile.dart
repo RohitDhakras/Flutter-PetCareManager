@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pet_care_manager/models/schedule.dart';
 import 'package:intl/intl.dart';
+import 'package:pet_care_manager/pages/schedule_edit_page.dart';
 
 class MyScheduleTile extends StatelessWidget {
   final Schedule schedule;
@@ -52,14 +53,33 @@ class MyScheduleTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Pet
-                Text(
-                  'Pet : ${schedule.petName}',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
-                  textAlign: TextAlign.center,
+                Row(
+                  children: [
+                    Text(
+                      'Pet : ${schedule.petName}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(width: 30),
+                    GestureDetector(
+                      onTap: () {
+                        print(schedule);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ScheduleEditPage(schedule: schedule),
+                          ),
+                        );
+                      },
+                      child: Icon(Icons.edit),
+                    )
+                  ],
                 ),
+
                 // Date and Time
                 Text(
                   'Time : ${DateFormat.jm().format(schedule.dateTime)}',

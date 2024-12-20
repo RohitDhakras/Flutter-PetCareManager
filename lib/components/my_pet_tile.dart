@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pet_care_manager/models/pet.dart';
 import 'package:pet_care_manager/models/pets_list.dart';
+import 'package:pet_care_manager/pages/pet_profile_page.dart';
 import 'package:provider/provider.dart';
 
 class MyPetTile extends StatelessWidget {
@@ -68,13 +69,28 @@ class MyPetTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // Pet Name
-                Text(
-                  pet.name,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PetProfilePage(pet: pet),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 241, 241, 241),
+                    ),
+                    child: Text(
+                      pet.name,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                      textAlign: TextAlign.left,
+                    ),
                   ),
-                  textAlign: TextAlign.left,
                 ),
 
                 // Animal Type

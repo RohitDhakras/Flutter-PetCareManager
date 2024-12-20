@@ -30,8 +30,14 @@ class SchedulesList extends ChangeNotifier {
   }
 
   // Remove Schedule to the List
-  void removeSchedule(Schedule schedule) {
+  void removeSchedule(Schedule schedule) async {
     _list.remove(schedule);
+    // await FirebaseFirestore.instance
+    //     .collection('Users')
+    //     .doc(user!.email)
+    //     .collection('Schedules')
+    //     .where('dateTime', isEqualTo: schedule.dateTime)
+    //     .where('petName', isEqualTo: schedule.petName).get().then((doc));
     notifyListeners();
   }
 }

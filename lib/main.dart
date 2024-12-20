@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:pet_care_manager/models/lost_and_found_list.dart';
 import 'package:pet_care_manager/models/pets_list.dart';
 import 'package:pet_care_manager/models/schedules_list.dart';
+import 'package:pet_care_manager/pages/consts.dart';
 import 'package:pet_care_manager/pages/home.dart';
 import 'package:pet_care_manager/pages/intro_page.dart';
 import 'package:pet_care_manager/pages/login.dart';
@@ -19,6 +21,7 @@ import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
 void main() async {
+  Gemini.init(apiKey: GEMINI_API_KEY);
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

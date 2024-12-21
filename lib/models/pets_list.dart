@@ -13,6 +13,27 @@ class PetsList extends ChangeNotifier {
   // Get a list of User's Pets
   List<Pet> get list => _list;
 
+  // Get Pets List
+  void getPets() async {
+    _list.clear();
+    await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(user!.email)
+        .collection('Pets')
+        .get()
+        .then((snapshot) {
+      for (var doc in snapshot.docs) {
+        Pet pet = Pet(
+          name: doc.data()['name'],
+          animalType: doc.data()['animal_type'],
+          breed: doc.data()['breed'],
+          age: doc.data()['age'],
+        );
+        _list.add(pet);
+      }
+    });
+  }
+
   // Add Pet to List
   void addPet(Pet pet) async {
     _list.add(pet);

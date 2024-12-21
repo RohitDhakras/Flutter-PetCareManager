@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:pet_care_manager/models/lost_and_found_list.dart';
 import 'package:pet_care_manager/models/pets_list.dart';
+import 'package:pet_care_manager/models/schedules_list.dart';
 import 'package:pet_care_manager/pages/home.dart';
 import 'package:pet_care_manager/pages/signup.dart';
 import 'package:provider/provider.dart';
@@ -21,18 +23,19 @@ class _LoginPageState extends State<LoginPage> {
 
   void _showForgotPasswordDialog() {
     showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: const Text('Forgot Password'),
-              content: const Text(
-                  'Please contact support or check your email for recovery options.'),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('OK'),
-                ),
-              ],
-            ));
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Forgot Password'),
+        content: const Text(
+            'Please contact support or check your email for recovery options.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _loginUser() async {

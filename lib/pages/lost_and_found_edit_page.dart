@@ -10,8 +10,8 @@ import 'package:pet_care_manager/models/pets_list.dart';
 import 'package:provider/provider.dart';
 
 class LostAndFoundEditPage extends StatefulWidget {
-  final LostAndFound lostAndFound;
-  const LostAndFoundEditPage({super.key, required this.lostAndFound});
+  final LostAndFound report;
+  const LostAndFoundEditPage({super.key, required this.report});
 
   @override
   State<LostAndFoundEditPage> createState() => _LostAndFoundEditPageState();
@@ -47,13 +47,17 @@ class _LostAndFoundEditPageState extends State<LostAndFoundEditPage> {
     // TODO: implement initState
     super.initState();
     getUserName();
-    petNameController.text = widget.lostAndFound.pet.name;
+    petNameController.text = widget.report.pet.name;
     dateController.text =
-        DateFormat('dd-MM-yyyy').format(widget.lostAndFound.missingDate);
-    phoneNumberController.text = widget.lostAndFound.phoneNumber;
-    messageController.text = widget.lostAndFound.message;
-    pet = widget.lostAndFound.pet;
-    date = widget.lostAndFound.missingDate;
+        DateFormat('dd-MM-yyyy').format(widget.report.missingDate);
+    phoneNumberController.text = widget.report.phoneNumber;
+    messageController.text = widget.report.message;
+    pet = Pet(
+        name: widget.report.pet.name,
+        animalType: widget.report.pet.animalType,
+        breed: widget.report.pet.breed,
+        age: widget.report.pet.age);
+    date = widget.report.missingDate;
   }
 
   @override
@@ -61,18 +65,21 @@ class _LostAndFoundEditPageState extends State<LostAndFoundEditPage> {
     // Key
     final formKey = GlobalKey<FormState>();
     final pets = context.watch<PetsList>().list;
+    pet = pets.firstWhere((p) => p.name == pet!.name);
 
-    void addReport() {
+    void updateReport() {
       if (formKey.currentState!.validate() && date != null && pet != null) {
-        LostAndFound report = LostAndFound(
-          userName: 'Rohit',
+        LostAndFound newReport = LostAndFound(
+          userName: userName,
           userEmail: userEmail!,
           pet: pet!,
           missingDate: date!,
           phoneNumber: phoneNumberController.text,
           message: messageController.text,
         );
-        context.read<LostAndFoundList>().addLostAndFoundReport(report);
+        context
+            .read<LostAndFoundList>()
+            .updateLostAndFoundReport(widget.report, newReport);
         Navigator.pop(context);
         Navigator.pushNamed(context, '/my_lost_and_found_page');
       }
@@ -80,7 +87,7 @@ class _LostAndFoundEditPageState extends State<LostAndFoundEditPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Lost ANd Found Report'),
+        title: Text('Edit Lost And Found Report'),
       ),
       backgroundColor: const Color.fromARGB(255, 222, 222, 222),
       body: Padding(
@@ -93,7 +100,7 @@ class _LostAndFoundEditPageState extends State<LostAndFoundEditPage> {
             children: [
               // Title
               Text(
-                'Add Report',
+                'Edit Report',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
@@ -214,9 +221,12 @@ class _LostAndFoundEditPageState extends State<LostAndFoundEditPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  // Cancel Button
+                  // Delete Button
                   ElevatedButton(
                     onPressed: () {
+                      context
+                          .read<LostAndFoundList>()
+                          .removeLostAndFoundReport(widget.report);
                       Navigator.pop(context);
                       Navigator.pushNamed(context, '/my_lost_and_found_page');
                     },
@@ -224,7 +234,7 @@ class _LostAndFoundEditPageState extends State<LostAndFoundEditPage> {
                       backgroundColor: Colors.white,
                     ),
                     child: Text(
-                      'Cancel',
+                      'Delete',
                       style: TextStyle(
                         color: Color.fromARGB(255, 54, 54, 54),
                         fontSize: 20,
@@ -233,14 +243,14 @@ class _LostAndFoundEditPageState extends State<LostAndFoundEditPage> {
                   ),
                   const SizedBox(width: 10),
 
-                  // Add Button
+                  // Update Button
                   ElevatedButton(
-                    onPressed: addReport, // Add Schedule to List
+                    onPressed: updateReport, // Add Schedule to List
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 57, 57, 57),
                     ),
                     child: Text(
-                      'Add',
+                      'Update',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 20,

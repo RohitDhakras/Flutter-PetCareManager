@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:pet_care_manager/models/lost_and_found.dart';
 import 'package:pet_care_manager/pages/lost_and_found_edit_page.dart';
 
-class MyLostAndFoundTile extends StatelessWidget {
+class MyUserLostAndFoundTile extends StatelessWidget {
   final LostAndFound report;
-  const MyLostAndFoundTile({super.key, required this.report});
+  const MyUserLostAndFoundTile({super.key, required this.report});
 
   @override
   Widget build(BuildContext context) {
@@ -19,14 +19,33 @@ class MyLostAndFoundTile extends StatelessWidget {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            // Missing Pet
             Center(
-              child: Text(
-                'Missing ${report.pet.animalType}',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Missing Pet
+                  Text(
+                    'Missing ${report.pet.animalType}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 24,
+                    ),
+                  ),
+                  SizedBox(width: 30),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => LostAndFoundEditPage(
+                            report: report,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Icon(Icons.edit_document),
+                  ),
+                ],
               ),
             ),
             SizedBox(height: 10),

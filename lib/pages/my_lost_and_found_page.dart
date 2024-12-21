@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:pet_care_manager/components/my_button.dart';
 import 'package:pet_care_manager/components/my_drawer.dart';
 import 'package:pet_care_manager/components/my_lost_and_found_tile.dart';
+import 'package:pet_care_manager/components/my_user_lost_and_found_tile.dart';
 import 'package:pet_care_manager/models/lost_and_found.dart';
 import 'package:pet_care_manager/models/lost_and_found_list.dart';
 import 'package:pet_care_manager/models/pet.dart';
@@ -21,6 +22,9 @@ class _MyLostAndFoundPageState extends State<MyLostAndFoundPage> {
 
   @override
   Widget build(BuildContext context) {
+    final reports = context.watch<LostAndFoundList>().list;
+    final userReports =
+        reports.where((report) => report.userEmail == user).toList();
     return Scaffold(
       appBar: AppBar(
         title: Text('My Lost And Found Reports'),
@@ -32,7 +36,7 @@ class _MyLostAndFoundPageState extends State<MyLostAndFoundPage> {
           children: [
             const SizedBox(height: 35),
             Text(
-              'Missing Pet Reports',
+              'My Missing Pet Reports',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 26,
@@ -41,50 +45,16 @@ class _MyLostAndFoundPageState extends State<MyLostAndFoundPage> {
             const SizedBox(height: 20),
             SizedBox(
               height: 550,
-              child: StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('Users')
-                    .doc(FirebaseAuth.instance.currentUser!.email)
-                    .collection('Reports')
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return const Text('An Error Occured');
-                  }
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  return ListView.builder(
-                    itemCount: snapshot.data!.size,
-                    scrollDirection: Axis.vertical,
-                    padding: EdgeInsets.all(15),
-                    itemBuilder: (context, index) {
-                      Timestamp stamp =
-                          snapshot.data!.docs[index]['missingDate'];
-                      // Get Individual Report
-                      LostAndFound report = LostAndFound(
-                        userName: snapshot.data!.docs[index]['userName'],
-                        userEmail: snapshot.data!.docs[index]['userEmail'],
-                        pet: Pet(
-                          name: snapshot.data!.docs[index]['pet']['petName'],
-                          animalType: snapshot.data!.docs[index]['pet']
-                              ['animal_type'],
-                          breed: snapshot.data!.docs[index]['pet']['breed'],
-                          age: snapshot.data!.docs[index]['pet']['age'],
-                        ),
-                        missingDate: stamp.toDate(),
-                        phoneNumber: snapshot.data!.docs[index]['phoneNumber'],
-                        message: snapshot.data!.docs[index]['message'],
-                      );
+              child: ListView.builder(
+                itemCount: userReports.length,
+                scrollDirection: Axis.vertical,
+                padding: EdgeInsets.all(15),
+                itemBuilder: (context, index) {
+                  // Get Individual Report
+                  LostAndFound report = userReports[index];
 
-                      context.read<LostAndFoundList>().list.add(report);
-
-                      // Return as Lost And Found Tile
-                      return MyLostAndFoundTile(report: report);
-                    },
-                  );
+                  // Return as Lost And Found Tile
+                  return MyUserLostAndFoundTile(report: report);
                 },
               ),
             ),

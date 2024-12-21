@@ -13,6 +13,7 @@ class PetsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final pets = context.watch<PetsList>().list;
     return Scaffold(
       appBar: AppBar(
         title: Text('My Pets'),
@@ -25,36 +26,15 @@ class PetsPage extends StatelessWidget {
             // Pet Tiles
             SizedBox(
               height: 550,
-              child: StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('Users')
-                    .doc(FirebaseAuth.instance.currentUser!.email.toString())
-                    .collection('Pets')
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return const Text('Something went wrong');
-                  }
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  return ListView.builder(
-                    itemCount: snapshot.data!.size,
-                    scrollDirection: Axis.vertical,
-                    padding: EdgeInsets.all(15),
-                    itemBuilder: (context, index) {
-                      Pet pet = Pet(
-                        name: snapshot.data!.docs[index]["name"],
-                        animalType: snapshot.data!.docs[index]["animal_type"],
-                        breed: snapshot.data!.docs[index]["breed"],
-                        age: snapshot.data!.docs[index]["age"],
-                      );
-                      context.read<PetsList>().list.add(pet);
-                      return MyPetTile(pet: pet);
-                    },
-                  );
+              child: ListView.builder(
+                itemCount: pets.length,
+                scrollDirection: Axis.vertical,
+                padding: EdgeInsets.all(15),
+                itemBuilder: (context, index) {
+                  // Get Individual Schedule
+                  Pet pet = pets[index];
+                  // Return as Pet Tile
+                  return MyPetTile(pet: pet);
                 },
               ),
             ),

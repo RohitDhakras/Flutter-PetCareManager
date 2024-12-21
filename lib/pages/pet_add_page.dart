@@ -10,7 +10,7 @@ class PetAddPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Key
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
     // Controllers
     final TextEditingController nameController = TextEditingController();
     final TextEditingController animalTypeController = TextEditingController();
@@ -18,7 +18,7 @@ class PetAddPage extends StatelessWidget {
     final TextEditingController ageController = TextEditingController();
 
     void addPet() {
-      if (_formKey.currentState!.validate()) {
+      if (formKey.currentState!.validate()) {
         final pet = Pet(
           name: nameController.text,
           animalType: animalTypeController.text,
@@ -41,7 +41,7 @@ class PetAddPage extends StatelessWidget {
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20),
         child: Form(
-          key: _formKey,
+          key: formKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,

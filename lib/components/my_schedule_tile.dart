@@ -66,12 +66,12 @@ class MyScheduleTile extends StatelessWidget {
                     SizedBox(width: 30),
                     GestureDetector(
                       onTap: () {
-                        print(schedule);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) =>
-                                ScheduleEditPage(schedule: schedule),
+                            builder: (context) => ScheduleEditPage(
+                              schedule: schedule,
+                            ),
                           ),
                         );
                       },

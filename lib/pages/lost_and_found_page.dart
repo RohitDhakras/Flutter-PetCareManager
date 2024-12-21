@@ -21,6 +21,9 @@ class _LostAndFoundPageState extends State<LostAndFoundPage> {
 
   @override
   Widget build(BuildContext context) {
+    final reports = context.watch<LostAndFoundList>().list;
+    final nonUserReports =
+        reports.where((report) => report.userEmail != user).toList();
     return Scaffold(
       appBar: AppBar(
         title: Text('Lost And Found Reports'),
@@ -48,48 +51,16 @@ class _LostAndFoundPageState extends State<LostAndFoundPage> {
             ),
             SizedBox(
               height: 550,
-              child: StreamBuilder(
-                stream: FirebaseFirestore.instance
-                    .collection('Lost And Found')
-                    .snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return const Text('An Error Occured');
-                  }
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                  return ListView.builder(
-                    itemCount: snapshot.data!.size,
-                    scrollDirection: Axis.vertical,
-                    padding: EdgeInsets.all(15),
-                    itemBuilder: (context, index) {
-                      Timestamp stamp =
-                          snapshot.data!.docs[index]['missingDate'];
-                      // Get Individual Report
-                      LostAndFound report = LostAndFound(
-                        userName: snapshot.data!.docs[index]['userName'],
-                        userEmail: snapshot.data!.docs[index]['userEmail'],
-                        pet: Pet(
-                          name: snapshot.data!.docs[index]['pet']['petName'],
-                          animalType: snapshot.data!.docs[index]['pet']
-                              ['animal_type'],
-                          breed: snapshot.data!.docs[index]['pet']['breed'],
-                          age: snapshot.data!.docs[index]['pet']['age'],
-                        ),
-                        missingDate: stamp.toDate(),
-                        phoneNumber: snapshot.data!.docs[index]['phoneNumber'],
-                        message: snapshot.data!.docs[index]['message'],
-                      );
+              child: ListView.builder(
+                itemCount: nonUserReports.length,
+                scrollDirection: Axis.vertical,
+                padding: EdgeInsets.all(15),
+                itemBuilder: (context, index) {
+                  // Get Individual Report
+                  LostAndFound report = nonUserReports[index];
 
-                      context.read<LostAndFoundList>().list.add(report);
-
-                      // Return as Lost And Found Tile
-                      return MyLostAndFoundTile(report: report);
-                    },
-                  );
+                  // Return as Lost And Found Tile
+                  return MyLostAndFoundTile(report: report);
                 },
               ),
             ),

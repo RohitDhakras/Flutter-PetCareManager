@@ -32,6 +32,10 @@ class _ScheduleEditPageState extends State<ScheduleEditPage> {
     titleController.text = widget.schedule.title;
     petNameController.text = widget.schedule.petName;
     locationController.text = widget.schedule.location;
+    final tempDateTime = widget.schedule.dateTime;
+    dateTime =
+        DateTime(tempDateTime.year, tempDateTime.month, tempDateTime.day);
+    timeOfDay = TimeOfDay(hour: tempDateTime.hour, minute: tempDateTime.minute);
     dateController.text =
         DateFormat('dd-MM-yyyy').format(widget.schedule.dateTime);
     timeController.text =
@@ -40,10 +44,6 @@ class _ScheduleEditPageState extends State<ScheduleEditPage> {
         .read<PetsList>()
         .list
         .firstWhere((p) => p.name == widget.schedule.petName);
-    final tempDateTime = widget.schedule.dateTime;
-    dateTime =
-        DateTime(tempDateTime.year, tempDateTime.month, tempDateTime.day);
-    timeOfDay = TimeOfDay(hour: tempDateTime.hour, minute: tempDateTime.minute);
   }
 
   @override
@@ -53,7 +53,7 @@ class _ScheduleEditPageState extends State<ScheduleEditPage> {
     // Pets List
     final pets = context.watch<PetsList>().list;
 
-    void addSchedule() {
+    void updateSchedule() {
       if (formKey.currentState!.validate()) {
         DateTime newDateTime = DateTime(
           dateTime!.year,
@@ -62,21 +62,29 @@ class _ScheduleEditPageState extends State<ScheduleEditPage> {
           timeOfDay!.hour,
           timeOfDay!.minute,
         );
-        final schedule = Schedule(
+        final newSchedule = Schedule(
           dateTime: newDateTime,
           petName: petNameController.text,
           title: titleController.text,
           location: locationController.text,
         );
-        context.read<SchedulesList>().addSchedule(schedule);
+        context
+            .read<SchedulesList>()
+            .updateSchedule(widget.schedule, newSchedule);
         Navigator.pop(context);
         Navigator.pushNamed(context, '/schedules_page');
       }
     }
 
+    void deleteSchedule() {
+      context.read<SchedulesList>().removeSchedule(widget.schedule);
+      Navigator.pop(context);
+      Navigator.pushNamed(context, '/schedules_page');
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Schedule'),
+        title: Text('Edit Schedule'),
       ),
       backgroundColor: const Color.fromARGB(255, 222, 222, 222),
       body: Padding(
@@ -89,7 +97,7 @@ class _ScheduleEditPageState extends State<ScheduleEditPage> {
             children: [
               // Title
               Text(
-                'Add Schedule',
+                'Edit Schedule',
                 textAlign: TextAlign.end,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
@@ -249,17 +257,14 @@ class _ScheduleEditPageState extends State<ScheduleEditPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  // Cancel Button
+                  // Delete Button
                   ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.pushNamed(context, '/schedules_page');
-                    },
+                    onPressed: deleteSchedule, // Delete Schedule From List
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                     ),
                     child: Text(
-                      'Cancel',
+                      'Delete',
                       style: TextStyle(
                         color: Color.fromARGB(255, 54, 54, 54),
                         fontSize: 20,
@@ -268,14 +273,14 @@ class _ScheduleEditPageState extends State<ScheduleEditPage> {
                   ),
                   const SizedBox(width: 10),
 
-                  // Add Button
+                  // Update Button
                   ElevatedButton(
-                    onPressed: addSchedule, // Add Schedule to List
+                    onPressed: updateSchedule, // Update Schedule to List
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 57, 57, 57),
                     ),
                     child: Text(
-                      'Add',
+                      'Update',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 20,
